@@ -157,7 +157,7 @@ for row_start in range(0, len(preset_names), 4):
     preset_cols = st.columns(4)
     for col, name in zip(preset_cols, preset_names[row_start:row_start + 4]):
         with col:
-            st.button(name, use_container_width=True, on_click=apply_preset, args=(name,), help=C.PRESET_HELP.get(name))
+            st.button(name, width="stretch", on_click=apply_preset, args=(name,), help=C.PRESET_HELP.get(name))
 
 st.caption(
     "🔗 Die Adresszeile oben spiegelt Ihre aktuelle Konfiguration wider – einfach kopieren, "
@@ -182,7 +182,7 @@ with st.sidebar:
     )
     seed = st.number_input("Zufalls-Seed", *bounds("seed_input"), key="seed_input", step=1)
     st.button(
-        "🎲 Neue Instanz generieren", use_container_width=True, on_click=randomize_seed,
+        "🎲 Neue Instanz generieren", width="stretch", on_click=randomize_seed,
         help="Würfelt einen neuen Zufalls-Seed für Auftragspositionen und -dauern.",
     )
 
@@ -315,7 +315,7 @@ else:
 if code != "cpsat_unproven" and cp is not None and cp["makespan"] < optimum - 0.1:
     st.info("Hinweis: CP-SAT liegt rechnerisch unter dem Auktions-Optimum - das kann nur Rundung sein (CP-SAT rechnet ganzzahlig).")
 
-st.plotly_chart(build_comparison_bars(cmp, show_language), use_container_width=True, key="comparison_bars")
+st.plotly_chart(build_comparison_bars(cmp, show_language), width="stretch", key="comparison_bars")
 
 available = [n for n in COLUMN_LABELS if cells.get(n) is not None and (show_language or n != "language")]
 if st.session_state.get("gantt_column") not in available:
@@ -323,7 +323,7 @@ if st.session_state.get("gantt_column") not in available:
 gantt_choice = st.selectbox("Zeitplan anzeigen", options=available, format_func=lambda n: COLUMN_LABELS[n],
                             key="gantt_column")
 st.plotly_chart(
-    build_schedule_figure(instance, cells[gantt_choice]["schedules"], optimum), use_container_width=True,
+    build_schedule_figure(instance, cells[gantt_choice]["schedules"], optimum), width="stretch",
     key=f"gantt_{gantt_choice}",
 )
 
@@ -343,7 +343,7 @@ st.caption(
        f" In der gewählten Sprache werden davon {_fmt_int(n_bids(n, k, language, lang_b))} angeboten.")
 )
 scatter_masks = wd_lang.masks if wd_lang.feasible else wd_all.masks
-st.plotly_chart(build_bid_scatter(instance, bids, mask, scatter_masks), use_container_width=True, key="bid_scatter")
+st.plotly_chart(build_bid_scatter(instance, bids, mask, scatter_masks), width="stretch", key="bid_scatter")
 if not wd_lang.feasible:
     st.caption("Die gewählte Sprache hat keine Zuteilung - markiert sind die Zuschlagsbündel des Optimums (alle Bündel).")
 else:
@@ -413,7 +413,7 @@ if st.session_state.get("scaling_owner") != scaling_key:
 else:
     with st.spinner("Messe die Skalierung..."):
         rows = _compute_scaling(*scaling_key)
-    st.plotly_chart(build_scaling_charts(rows), use_container_width=True, key="scaling_chart")
+    st.plotly_chart(build_scaling_charts(rows), width="stretch", key="scaling_chart")
     table = {
         "n": [r["n_jobs"] for r in rows], "Gebote (alle Bündel)": [_fmt_int(r["bids_all"]) for r in rows],
         "Gebote (1 Block)": [_fmt_int(r["bids_block1"]) for r in rows],
@@ -446,7 +446,7 @@ if st.session_state.get("lang_sweep_owner") != sweep_key:
 else:
     with st.spinner("Rechne den Sprach-Sweep..."):
         sweep = _compute_language_sweep(*sweep_key)
-    st.plotly_chart(build_language_sweep_chart(sweep), use_container_width=True, key="language_sweep_chart")
+    st.plotly_chart(build_language_sweep_chart(sweep), width="stretch", key="language_sweep_chart")
     st.table({
         "Verfahren": [r["label"] for r in sweep["rows"]], "Gebote": [_fmt_int(r["bids"]) for r in sweep["rows"]],
         "mittlere Lücke": [f"{r['mean_gap']:.1f} %" for r in sweep["rows"]],
@@ -495,7 +495,7 @@ else:
         ],
     }
     st.table(table_rows)
-    st.plotly_chart(build_payment_charts(mech), use_container_width=True, key="payment_charts")
+    st.plotly_chart(build_payment_charts(mech), width="stretch", key="payment_charts")
     monopoly = rows_by_rule["B"]
     if not monopoly["defined"]:
         names = ", ".join(f"Agent {a + 1}" for a in monopoly["undefined"])
@@ -545,7 +545,7 @@ else:
             ),
         )
     lab = _compute_lab(scenario_key, int(bidder), language, lang_b)
-    st.plotly_chart(build_misreport_chart(lab, int(bidder)), use_container_width=True, key=f"misreport_chart_{bidder}")
+    st.plotly_chart(build_misreport_chart(lab, int(bidder)), width="stretch", key=f"misreport_chart_{bidder}")
     st.caption(
         "Liegt eine Linie bei einem anderen λ höher als bei 'ehrlich' (λ = 1), lohnt sich Lügen. Bei Regel B (VCG) liegt kein "
         "λ über dem ehrlichen Nutzen. Das Gitter ist eine Untergrenze: der wahre Regret ist mindestens so groß."
@@ -565,7 +565,7 @@ elif st.session_state.get("regret_sweep_owner") != regret_key:
 else:
     with st.spinner("Rechne den Regret-Sweep..."):
         msweep = _compute_mechanism_sweep(*regret_key)
-    st.plotly_chart(build_mechanism_sweep_chart(msweep), use_container_width=True, key="mechanism_sweep_chart")
+    st.plotly_chart(build_mechanism_sweep_chart(msweep), width="stretch", key="mechanism_sweep_chart")
     st.table({
         "Regel": [RULE_LABELS[r] for r in MECHANISM_RULES],
         "Makespan über Optimum": [f"{msweep['rows'][r]['mean_gap']:+.1f} %" for r in MECHANISM_RULES],
