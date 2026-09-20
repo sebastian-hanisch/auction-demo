@@ -109,3 +109,25 @@ def test_mechanism_table_and_lab_for_infeasible_language():
     instance = generate_instance(8, 3, 0.3, 1.0, 11)
     table = mechanism_table(instance, language=C.LANG_SIZE, b=2)
     assert table["infeasible"] and table["rows"] == []
+
+
+def test_every_figure_locks_its_axes_for_touch_scrolling():
+    import auction_visualization as V
+    from auction_evaluation import compare_instance, language_sweep, mechanism_sweep
+    from auction_bids import bundle_bid_table, language_mask
+    instance = generate_instance(6, 3, 0.3, 1.0, 1)
+    cmp = compare_instance(instance, C.LANG_BLOCK1, include_cpsat=False)
+    table = mechanism_table(instance)
+    figures = [
+        V.build_schedule_figure(instance, cmp["cells"]["all"]["schedules"], cmp["reference"]),
+        V.build_comparison_bars(cmp),
+        V.build_bid_scatter(instance, bundle_bid_table(instance), language_mask(instance, C.LANG_ALL), (0, 0, 0)),
+        V.build_scaling_charts(scaling_sweep(3, (6, 8), 0.3, 1.0)),
+        V.build_language_sweep_chart(language_sweep(6, 3, 0.3, 1.0, n_instances=3)),
+        V.build_payment_charts(table),
+        V.build_misreport_chart(lying_lab(instance, 0), 0),
+        V.build_mechanism_sweep_chart(mechanism_sweep(6, 3, 0.3, 1.0, n_instances=2)),
+    ]
+    for fig in figures:
+        axes = [v for k, v in fig.layout.to_plotly_json().items() if k.startswith(("xaxis", "yaxis"))]
+        assert axes and all(a.get("fixedrange") is True for a in axes)

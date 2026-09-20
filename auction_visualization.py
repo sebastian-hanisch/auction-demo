@@ -20,6 +20,13 @@ ALL_COLOR = "#009E73"
 CNP_COLOR = "#B0B0B0"
 
 
+def _lock(fig):
+    """Achsen sperren: kein Pinch-Zoom/Ziehen, damit Touch-Geräte die Seite scrollen können (Hover-Tooltips bleiben)."""
+    fig.update_xaxes(fixedrange=True)
+    fig.update_yaxes(fixedrange=True)
+    return fig
+
+
 def _intervals(instance, schedules):
     intervals = {a: [] for a in range(instance.n_agents)}
     for agent_id in range(instance.n_agents):
@@ -51,7 +58,7 @@ def build_schedule_figure(instance, schedules, reference=None):
                       margin=dict(l=10, r=10, t=30, b=10))
     fig.update_yaxes(categoryorder="array", categoryarray=[f"Agent {a + 1}" for a in range(instance.n_agents)],
                      autorange="reversed")
-    return fig
+    return _lock(fig)
 
 
 def build_comparison_bars(cmp, show_language=True):
@@ -67,7 +74,7 @@ def build_comparison_bars(cmp, show_language=True):
                   annotation_position="bottom right")
     fig.update_yaxes(title="Makespan (min)", rangemode="tozero")
     fig.update_layout(height=320, margin=dict(l=10, r=10, t=20, b=10))
-    return fig
+    return _lock(fig)
 
 
 def build_bid_scatter(instance, bids, mask, winner_masks):
@@ -97,7 +104,7 @@ def build_bid_scatter(instance, bids, mask, winner_masks):
     fig.update_xaxes(title="Bündelgröße (Aufträge)", dtick=1)
     fig.update_yaxes(title="niedrigstes Gebot (min)")
     fig.update_layout(height=340, margin=dict(l=10, r=10, t=20, b=10), legend=dict(orientation="h", y=-0.25))
-    return fig
+    return _lock(fig)
 
 
 def build_scaling_charts(rows):
@@ -117,7 +124,7 @@ def build_scaling_charts(rows):
     fig.update_yaxes(type="log", title_text="Sekunden", row=1, col=2)
     fig.update_xaxes(title_text="Aufträge n", dtick=2)
     fig.update_layout(height=330, margin=dict(l=10, r=10, t=40, b=10), legend=dict(orientation="h", y=-0.3))
-    return fig
+    return _lock(fig)
 
 
 def build_language_sweep_chart(sweep):
@@ -138,7 +145,7 @@ def build_language_sweep_chart(sweep):
     fig.update_xaxes(title="Anzahl Gebote (log)", type="log", range=[np.log10(min(bids)) - 0.3, np.log10(max(bids)) + 0.45])
     fig.update_yaxes(title="mittlere Lücke zum Optimum (%)", rangemode="tozero")
     fig.update_layout(height=380, margin=dict(l=10, r=10, t=20, b=10))
-    return fig
+    return _lock(fig)
 
 
 def build_payment_charts(table):
@@ -154,7 +161,7 @@ def build_payment_charts(table):
                          text=["n. def." if v is None else f"{v:.2f}" for v in ratios], textposition="outside"), row=1, col=2)
     fig.add_hline(y=1.0, line_dash="dash", line_color="gray", row=1, col=2)
     fig.update_layout(height=320, margin=dict(l=10, r=10, t=40, b=10))
-    return fig
+    return _lock(fig)
 
 
 def build_misreport_chart(curves, agent):
@@ -171,7 +178,7 @@ def build_misreport_chart(curves, agent):
     fig.update_xaxes(title=f"Faktor λ, mit dem Agent {agent + 1} alle seine Gebote skaliert")
     fig.update_yaxes(title="Nutzen = Zahlung − wahre Kosten (min)")
     fig.update_layout(height=340, margin=dict(l=10, r=10, t=30, b=10), legend=dict(orientation="h", y=-0.3))
-    return fig
+    return _lock(fig)
 
 
 def build_mechanism_sweep_chart(sweep):
@@ -187,4 +194,4 @@ def build_mechanism_sweep_chart(sweep):
         fig.add_trace(go.Bar(x=labels, y=values, marker_color=colors, showlegend=False,
                              text=[f"{v:.0f}" for v in values], textposition="outside"), row=1, col=col)
     fig.update_layout(height=320, margin=dict(l=10, r=10, t=40, b=10))
-    return fig
+    return _lock(fig)
