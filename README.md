@@ -1,5 +1,7 @@
 # Kombinatorische Auktionen an der Kran-Auftragsvergabe – Streamlit-Demo
 
+**[→ Demo live ausprobieren](https://sebastianhanisch-auction-demo.streamlit.app/)**
+
 Siebtes Stück der "Konzepte"-Reihe für die Website "Sebastian Hanisch – Operations
 Research und Machine Learning", **Multi-Agenten-Koordinations-Linie** - ein **unabhängiger Zweig** vom Wurzelstück
 [contract-net-demo](../contract-net-demo) (wie [dcop-demo](../dcop-demo) und [marl-demo](../marl-demo)). Das Vehikel (Kran-Aufträge
